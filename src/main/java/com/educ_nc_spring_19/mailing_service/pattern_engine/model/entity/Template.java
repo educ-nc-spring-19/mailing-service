@@ -4,7 +4,6 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
 import java.util.UUID;
 
 @Entity
@@ -40,13 +39,5 @@ public class Template {
         this.dateCreating = OffsetDateTime.now();
         this.header = header;
         this.text = text;
-    }
-
-    public String buildHeader(ArrayList args) {
-        return String.format(this.header, args);
-    }
-
-    public String buildText(ArrayList args) {
-        return String.format(this.text, args);
     }
 }

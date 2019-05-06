@@ -4,7 +4,7 @@ import com.educ_nc_spring_19.mailing_service.notificator.LetterSender;
 import com.educ_nc_spring_19.mailing_service.pattern_engine.client.MasterDataClient;
 import com.educ_nc_spring_19.mailing_service.pattern_engine.model.entity.Letter;
 import com.educ_nc_spring_19.mailing_service.pattern_engine.model.entity.Template;
-import com.educ_nc_spring_19.mailing_service.pattern_engine.service.JSONArgsParsingService;
+import com.educ_nc_spring_19.mailing_service.pattern_engine.service.RenderingService;
 import com.educ_nc_spring_19.mailing_service.pattern_engine.service.repo.LetterRepository;
 import com.educ_nc_spring_19.mailing_service.pattern_engine.service.repo.TemplateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -23,7 +24,7 @@ public class LetterController {
     @Autowired
     private TemplateRepository templateRepository;
     @Autowired
-    private JSONArgsParsingService jsonArgsParsingService;
+    private RenderingService renderingService;
     @Autowired
     private LetterSender letterSender;
     @Autowired
@@ -68,37 +69,25 @@ public class LetterController {
         return result;
     }
 
-    //Передаваемые данные должны быть в формате json, в места, где нужно имя получателя, вписывается пустое место
-    //и в аргументах передаётся id получателя, чтобы я потом могла подтянуть имя получателя из Master Data и вставить
-    //в местах, где нужно имя получателя, ставится параметр name: ""
-    //в местах, где нужно имя куратора, ставится параметр mentor_name: "UUID ментора"
-    //в местах, где нужно имя бэкапа, ставится параметр backup_name: "UUID бэкапа"
-    //ВСЕ АРГУМЕНТЫ ДОЛЖНЫ БЫТЬ СТРОКОВЫМИ
-    //id получателя - id пользователя, id ментора или бэкапа - id ментора из мастердаты, НЕ ПОЛЬЗОВАТЕЛЯ
+
     //receiver_type - это student или mentor
     @RequestMapping(value = "/sendMail", method = RequestMethod.POST, produces = "application/json")
     public String sendMail(@RequestParam("receiver_id") UUID rid, @RequestParam("receiver_type") String rtype,
-                           @RequestParam("type") String type, @RequestParam("header_args") String hArgs,
-                           @RequestParam("text_args") String tArgs) {
+                           @RequestParam("type") String type, @RequestParam("header_args") Map<String, Object> Args) {
         String result = "success";
         if (templateRepository.existsByType(type)) {
             try {
                 Template template = templateRepository.findByType(type).get(0);
-                ArrayList<String> headerArgs = jsonArgsParsingService.Parse(rtype, hArgs, rid);
-                ArrayList<String> textArgs = jsonArgsParsingService.Parse(rtype, tArgs, rid);
-                Letter letter = new Letter(rid, template.buildText(textArgs), template.buildHeader(headerArgs), type);
+                String header = renderingService.render(template.getHeader(), Args);
+                String text = renderingService.render(template.getText(), Args);
+                Letter letter = new Letter(rid, header, text, type);
                 String mail;
-
-                if (rtype == "student") {
-                    mail = masterDataClient.getStudentById(rid);
-                    //TODO!!!!!!!!!!!!!!!!!!!!!!!!
+                if (rtype.equals("student")) {
+                    mail = masterDataClient.getStudentById(rid).getEmailAddress();
                 } else {
-                    mail = masterDataClient.getMentorById(rid);
-                    //TODO!!!!!!!!!!!!!!!!!!!!!!!!
+                    mail = masterDataClient.getMentorById(rid).getEmailAddress();
                 }
-
                 letterSender.SendLetter(letter, mail);
-
                 letterRepository.save(letter);
             } catch (Exception e) {
                 result = "Exception: " + e.getMessage();

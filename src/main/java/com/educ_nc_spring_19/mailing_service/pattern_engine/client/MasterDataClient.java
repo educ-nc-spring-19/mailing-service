@@ -5,11 +5,10 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-/*
+
 import com.educ_nc_spring_19.educ_nc_spring_19_common.common.dto.MentorDTO;
 import com.educ_nc_spring_19.educ_nc_spring_19_common.common.dto.StudentDTO;
-*/
-//TODO!!!!!!!!!!!!!!!!!!!!!!!!!
+
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.logging.log4j.Level;
 import org.springframework.core.ParameterizedTypeReference;
@@ -34,8 +33,6 @@ public class MasterDataClient {
         restTemplate = restTemplateBuilder.build();
     }
 
-
-    //TODO!!!!!!!!!!!!!!!!!!!!!!!!
     public MentorDTO getMentorById(UUID mentorId) {
         ResponseEntity<List<MentorDTO>> response = restTemplate.exchange(
                 UriComponentsBuilder.newInstance().scheme("http").host(MASTER_DATA_URL).port(MASTER_DATA_PORT)
@@ -54,7 +51,6 @@ public class MasterDataClient {
         return null;
     }
 
-    //TODO!!!!!!!!!!!!!!!!!!!!!!!!
     public StudentDTO getStudentById(UUID studentId) {
         ResponseEntity<StudentDTO> response = restTemplate.getForEntity(
                 UriComponentsBuilder.newInstance().scheme("http").host(MASTER_DATA_URL).port(MASTER_DATA_PORT)
