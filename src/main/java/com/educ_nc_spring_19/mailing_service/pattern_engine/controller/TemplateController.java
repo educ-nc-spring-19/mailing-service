@@ -58,7 +58,7 @@ public class TemplateController {
             if (templateRepository.existsByType(templateRequest.type)) {
                 result = "Template of this type already exists";
             } else {
-                Template template = new Template(templateRequest.cid, templateRequest.type, templateRequest.header, templateRequest.text);
+                Template template = new Template(templateRequest.creator_id, templateRequest.type, templateRequest.header, templateRequest.text);
                 templateRepository.save(template);
             }
         } catch (Exception e) {

@@ -7,7 +7,7 @@ import java.util.UUID;
 @Data
 public class TemplateRequest {
 
-    public UUID cid;
+    public UUID creator_id;
 
     public String type;
 

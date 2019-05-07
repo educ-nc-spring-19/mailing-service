@@ -18,7 +18,7 @@ Make these requests with Postman (all of Post type)
    2. body (json):
      
             {
-                "cid":"be8ddc66-58b6-409e-ae35-fc1d80a456b4",
+                "creator_id":"be8ddc66-58b6-409e-ae35-fc1d80a456b4",
             
                 "type":"congradulations",
             
@@ -31,9 +31,9 @@ Make these requests with Postman (all of Post type)
    2. body (json):
    
            {
-                "rid":"97ee68a6-2993-49cd-926b-887911876422",
+                "receiver_id":"97ee68a6-2993-49cd-926b-887911876422",
                 
-                "rtype":"student",
+                "receiver_type":"student",
                
                 "type":"congradulations",
                
@@ -49,7 +49,7 @@ Make these requests with Postman (all of Post type)
    2. body (json):
    
             {
-                "cid":"be8ddc66-58b6-409e-ae35-fc1d80a456b4",
+                "creator_id":"be8ddc66-58b6-409e-ae35-fc1d80a456b4",
            
                 "type":"test",
            
@@ -62,9 +62,9 @@ Make these requests with Postman (all of Post type)
    2. body (json):
    
            {
-                "rid":"97ee68a6-2993-49cd-926b-887911876422",
+                "receiver_id":"97ee68a6-2993-49cd-926b-887911876422",
                 
-                "rtype":"student",
+                "receiver_type":"student",
                
                 "type":"test",
                
