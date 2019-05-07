@@ -10,8 +10,10 @@ public class ExtractorsBeanPostProcessor implements BeanPostProcessor {
 
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+        System.out.println("now we initialised bean " + beanName);
         if (bean instanceof Extractor) {
             ExtractorService.registerService(((Extractor) bean).getKey(), (Extractor) bean);
+            System.out.println("it is extractor");
         }
         return bean;
     }

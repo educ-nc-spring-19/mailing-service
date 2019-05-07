@@ -1,6 +1,7 @@
 package com.educ_nc_spring_19.mailing_service.pattern_engine.client;
 
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -18,6 +19,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
+
 @Log4j2
 @Component
 public class MasterDataClient {
@@ -29,20 +32,24 @@ public class MasterDataClient {
         restTemplate = restTemplateBuilder.build();
     }
 
-    public MentorDTO getMentorByUserId(UUID mentorUserId) {
+    public MentorDTO getMentorByUserId(UUID userId) {
+        if (userId == null) {
+            log.log(Level.WARN, "userId is null");
+            return null;
+        }
+
         ResponseEntity<List<MentorDTO>> response = restTemplate.exchange(
                 UriComponentsBuilder.newInstance().scheme("http").host(MASTER_DATA_URL).port(MASTER_DATA_PORT)
                         .path("/master-data/rest/api/v1/mentor")
-                        .query("{userId}")
-                        .buildAndExpand(mentorUserId.toString()).toUri(),
+                        .queryParam("userId",userId.toString())
+                        .build().toUri(),
                 HttpMethod.GET,
                 null,
                 new ParameterizedTypeReference<List<MentorDTO>>(){});
 
-
-
         log.log(Level.INFO, "getMentorByUserId, response status = " + response.getStatusCode().toString());
-        if (response.getStatusCode().equals(HttpStatus.OK) && response.getBody() != null && !response.getBody().isEmpty()) {
+        if (response.getStatusCode().equals(HttpStatus.OK) && CollectionUtils.isNotEmpty(response.getBody())) {
+            log.log(Level.INFO, "Mentors: " + response.getBody().stream().map(MentorDTO::getId).collect(Collectors.toList()));
             return response.getBody().get(0);
         }
 
