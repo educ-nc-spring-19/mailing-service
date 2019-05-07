@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -73,8 +72,6 @@ public class LetterController {
     }
 
 
-    //TODO: couldn't add @BodyParam, but I tried
-    //TODO: not header just args
     //receiver_type - это student или mentor
     @RequestMapping(value = "/sendMail", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     public String sendMail(@RequestBody LetterRequest letterRequest) {

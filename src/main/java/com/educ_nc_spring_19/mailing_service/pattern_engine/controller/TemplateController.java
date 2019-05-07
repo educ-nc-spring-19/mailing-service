@@ -51,7 +51,6 @@ public class TemplateController {
         }
     }
 
-    //TODO: couldn't add @BodyParam, but I tried
     @RequestMapping(value = "/template/create", method = RequestMethod.POST, produces = "application/json")
     public String createTemplate(@RequestBody TemplateRequest templateRequest) {
         String result = "success";
