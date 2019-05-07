@@ -28,7 +28,7 @@ public class Template {
     @Column
     private String header;
 
-    @Column
+    @Column(length = 4095)
     private String text;
 
     public Template() {}

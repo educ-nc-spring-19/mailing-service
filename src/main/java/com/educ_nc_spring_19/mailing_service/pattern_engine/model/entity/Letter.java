@@ -23,17 +23,17 @@ public class Letter {
     private UUID receiverId;
 
     @Column
-    private String text;
-
-    @Column
     private String header;
+
+    @Column(length = 4095)
+    private String text;
 
     @Column
     private String type;
 
     public Letter() {}
 
-    public Letter(UUID id, String text, String header, String type) {
+    public Letter(UUID id, String header, String text, String type) {
         this.receiverId = id;
         this.dateCreating = OffsetDateTime.now();
         this.text = text;

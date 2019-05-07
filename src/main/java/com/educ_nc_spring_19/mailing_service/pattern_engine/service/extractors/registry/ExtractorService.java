@@ -9,17 +9,17 @@ import java.util.Map;
 @Service
 public class ExtractorService {
 
-    private static Map<String, Extractor> Extractors = new HashMap<>();
+    private static Map<String, Extractor> extractors = new HashMap<>();
 
     static void registerService(String key, Extractor value) {
-        Extractors.put(key, value);
+        extractors.put(key, value);
     }
 
     public Extractor getExtractor(String key) {
-        if (Extractors.containsKey(key)) {
-            return Extractors.get(key);
+        if (extractors.containsKey(key)) {
+            return extractors.get(key);
         } else {
-            return Extractors.get("Default");
+            return extractors.get("Default");
         }
     }
 }

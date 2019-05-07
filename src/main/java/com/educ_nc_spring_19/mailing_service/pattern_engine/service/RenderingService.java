@@ -18,12 +18,6 @@ public class RenderingService {
             template = template.replaceAll("%" + entry.getKey() + "%", renderPlaceholder(entry.getKey(), entry.getValue()));
         }
 
-        /*
-        params.forEach((key, value) -> {
-            template.replaceAll("%" + key + "%", renderPlaceholder(key, value));
-        });
-        */
-
         return template;
     }
 

@@ -6,7 +6,9 @@ import com.educ_nc_spring_19.mailing_service.pattern_engine.service.extractors.E
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.UUID;
+import org.springframework.stereotype.Component;
 
+@Component
 public class MentorNameByMDIdExtractor implements Extractor {
 
     @Autowired
@@ -14,12 +16,17 @@ public class MentorNameByMDIdExtractor implements Extractor {
 
     @Override
     public String extract(Object value) {
-        MentorDTO mentorDTO = masterDataClient.getMentorByUserId((UUID) value);
-        return mentorDTO.getFirstName() + " " + mentorDTO.getLastName();
+        if (value != null) {
+            MentorDTO mentorDTO = masterDataClient.getMentorByUserId(UUID.fromString(String.valueOf(value)));
+            return mentorDTO.getFirstName() + " " + mentorDTO.getLastName();
+        } else {
+            return "(не указан)";
+        }
     }
 
     @Override
     public String getKey() {
         return "Mentor name";
     }
+
 }

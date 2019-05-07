@@ -1,7 +1,5 @@
 package com.educ_nc_spring_19.mailing_service.pattern_engine.controller;
 
-import com.educ_nc_spring_19.educ_nc_spring_19_common.common.dto.MentorDTO;
-import com.educ_nc_spring_19.educ_nc_spring_19_common.common.dto.StudentDTO;
 import com.educ_nc_spring_19.mailing_service.notificator.LetterSender;
 import com.educ_nc_spring_19.mailing_service.pattern_engine.client.MasterDataClient;
 import com.educ_nc_spring_19.mailing_service.pattern_engine.controller.request.LetterRequest;
@@ -29,8 +27,6 @@ public class LetterController {
     private LetterSender letterSender;
     @Autowired
     private MasterDataClient masterDataClient;
-    @Autowired
-    private ExtractorService extractorService;
 
     @RequestMapping(value = "/letter/findById", method = RequestMethod.GET, produces = "application/json")
     public Letter getLetterById(@RequestParam("id") UUID id) {
@@ -79,9 +75,13 @@ public class LetterController {
         if (templateRepository.existsByType(letterRequest.type)) {
             try {
                 Template template = templateRepository.findByType(letterRequest.type).get(0);
+                System.out.println("я");
                 String header = renderingService.render(template.getHeader(), letterRequest.Args);
+                System.out.println("почти");
                 String text = renderingService.render(template.getText(), letterRequest.Args);
+                System.out.println("смог");
                 Letter letter = new Letter(letterRequest.rid, header, text, letterRequest.type);
+                System.out.println("ура!");
                 String mail;
                 if (letterRequest.rtype.equals("student")) {
                     mail = masterDataClient.getStudentById(letterRequest.rid).getEmailAddress();
@@ -97,33 +97,6 @@ public class LetterController {
             result = "This template type doesn't exist";
         }
         return result;
-    }
-
-    @RequestMapping(value = "/letter/test", method = RequestMethod.GET, produces = "application/json")
-    public String Test() {
-        String result = "success";
-        try {
-            Letter letter = new Letter(UUID.randomUUID(), "TEST!", "Test message", "test");
-            letterSender.SendLetter(letter, "zetesovadana@gmail.com");
-        } catch (Exception e) {
-            result = "Exception: " + e.getMessage();
-        }
-        return result;
-    }
-
-    @RequestMapping(value = "/mdStudent/test", method = RequestMethod.GET, produces = "application/json")
-    public StudentDTO TestStudent() {
-        return masterDataClient.getStudentById(UUID.fromString("97ee68a6-2993-49cd-926b-887911876457"));
-    }
-
-    @RequestMapping(value = "/mdMentor/test", method = RequestMethod.GET, produces = "application/json")
-    public MentorDTO TestMentor(@RequestParam("id") UUID id) {
-        return masterDataClient.getMentorByUserId(id);
-    }
-
-    @RequestMapping(value = "/extractors/test", method = RequestMethod.GET, produces = "application/json")
-    public String TestExtractors() {
-        return extractorService.getExtractor("Mentor name").getKey();
     }
 
 }
