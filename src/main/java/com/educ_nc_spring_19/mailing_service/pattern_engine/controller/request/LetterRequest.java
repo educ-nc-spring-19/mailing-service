@@ -7,9 +7,9 @@ import java.util.UUID;
 
 @Data
 public class LetterRequest {
-    public UUID rid;
+    public UUID receiver_id;
 
-    public String rtype;
+    public String receiver_type;
 
     public String type;
 

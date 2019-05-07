@@ -80,13 +80,13 @@ public class LetterController {
                 System.out.println("почти");
                 String text = renderingService.render(template.getText(), letterRequest.Args);
                 System.out.println("смог");
-                Letter letter = new Letter(letterRequest.rid, header, text, letterRequest.type);
+                Letter letter = new Letter(letterRequest.receiver_id, header, text, letterRequest.type);
                 System.out.println("ура!");
                 String mail;
-                if (letterRequest.rtype.equals("student")) {
-                    mail = masterDataClient.getStudentById(letterRequest.rid).getEmailAddress();
+                if (letterRequest.receiver_type.equals("student")) {
+                    mail = masterDataClient.getStudentById(letterRequest.receiver_id).getEmailAddress();
                 } else {
-                    mail = masterDataClient.getMentorByUserId(letterRequest.rid).getEmailAddress();
+                    mail = masterDataClient.getMentorByUserId(letterRequest.receiver_id).getEmailAddress();
                 }
                 letterSender.SendLetter(letter, mail);
                 letterRepository.save(letter);
