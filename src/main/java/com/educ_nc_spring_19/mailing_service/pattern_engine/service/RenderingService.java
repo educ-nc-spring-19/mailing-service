@@ -12,14 +12,23 @@ public class RenderingService {
     @Autowired
     private ExtractorService extractorService;
 
-    public String render(final String template, Map<String, Object> params) {
+    public String render(String template, Map<String, Object> params) {
+
+        for (Map.Entry<String, Object> entry : params.entrySet()) {
+            template = template.replaceAll("%" + entry.getKey() + "%", renderPlaceholder(entry.getKey(), entry.getValue()));
+        }
+
+        /*
         params.forEach((key, value) -> {
             template.replaceAll("%" + key + "%", renderPlaceholder(key, value));
         });
+        */
+
         return template;
     }
 
     private String renderPlaceholder(String key, Object value) {
         return extractorService.getExtractor(key).extract(value);
     }
+
 }

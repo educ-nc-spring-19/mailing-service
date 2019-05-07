@@ -9,7 +9,6 @@ import org.springframework.web.client.RestTemplate;
 import com.educ_nc_spring_19.educ_nc_spring_19_common.common.dto.MentorDTO;
 import com.educ_nc_spring_19.educ_nc_spring_19_common.common.dto.StudentDTO;
 
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.logging.log4j.Level;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
@@ -17,11 +16,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
-
 @Log4j2
 @Component
 public class MasterDataClient {
@@ -33,15 +29,17 @@ public class MasterDataClient {
         restTemplate = restTemplateBuilder.build();
     }
 
-    public MentorDTO getMentorById(UUID mentorId) {
+    public MentorDTO getMentorByUserId(UUID mentorUserId) {
         ResponseEntity<List<MentorDTO>> response = restTemplate.exchange(
                 UriComponentsBuilder.newInstance().scheme("http").host(MASTER_DATA_URL).port(MASTER_DATA_PORT)
                         .path("/master-data/rest/api/v1/mentor")
-                        .query("{userId}") //!!!!!!!!!!!!!!!!!!!!!
-                        .buildAndExpand(mentorId.toString()).toUri(),
+                        .query("{userId}")
+                        .buildAndExpand(mentorUserId.toString()).toUri(),
                 HttpMethod.GET,
                 null,
                 new ParameterizedTypeReference<List<MentorDTO>>(){});
+
+
 
         log.log(Level.INFO, "getMentorByUserId, response status = " + response.getStatusCode().toString());
         if (response.getStatusCode().equals(HttpStatus.OK) && response.getBody() != null && !response.getBody().isEmpty()) {
@@ -50,6 +48,7 @@ public class MasterDataClient {
 
         return null;
     }
+
 
     public StudentDTO getStudentById(UUID studentId) {
         ResponseEntity<StudentDTO> response = restTemplate.getForEntity(

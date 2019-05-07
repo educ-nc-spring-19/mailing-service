@@ -8,7 +8,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class ExtractorsBeanPostProcessor implements BeanPostProcessor {
 
-    public Object postProcessAfterInitialisation(Object bean, String beanName) throws BeansException {
+    @Override
+    public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
         if (bean instanceof Extractor) {
             ExtractorService.registerService(((Extractor) bean).getKey(), (Extractor) bean);
         }

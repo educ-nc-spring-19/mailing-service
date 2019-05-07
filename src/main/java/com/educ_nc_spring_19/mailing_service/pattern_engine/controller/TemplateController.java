@@ -1,12 +1,10 @@
 package com.educ_nc_spring_19.mailing_service.pattern_engine.controller;
 
+import com.educ_nc_spring_19.mailing_service.pattern_engine.controller.request.TemplateRequest;
 import com.educ_nc_spring_19.mailing_service.pattern_engine.model.entity.Template;
 import com.educ_nc_spring_19.mailing_service.pattern_engine.service.repo.TemplateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.UUID;
@@ -53,15 +51,15 @@ public class TemplateController {
         }
     }
 
+    //TODO: couldn't add @BodyParam, but I tried
     @RequestMapping(value = "/template/create", method = RequestMethod.POST, produces = "application/json")
-    public String createTemplate(@RequestParam("creator_id") UUID cid, @RequestParam("type") String type,
-                                 @RequestParam("header") String header, @RequestParam("text") String text) {
+    public String createTemplate(@RequestBody TemplateRequest templateRequest) {
         String result = "success";
         try {
-            if (templateRepository.existsByType(type)) {
+            if (templateRepository.existsByType(templateRequest.type)) {
                 result = "Template of this type already exists";
             } else {
-                Template template = new Template(cid, type, header, text);
+                Template template = new Template(templateRequest.cid, templateRequest.type, templateRequest.header, templateRequest.text);
                 templateRepository.save(template);
             }
         } catch (Exception e) {

@@ -1,17 +1,18 @@
 package com.educ_nc_spring_19.mailing_service.pattern_engine.controller;
 
+import com.educ_nc_spring_19.educ_nc_spring_19_common.common.dto.MentorDTO;
+import com.educ_nc_spring_19.educ_nc_spring_19_common.common.dto.StudentDTO;
 import com.educ_nc_spring_19.mailing_service.notificator.LetterSender;
 import com.educ_nc_spring_19.mailing_service.pattern_engine.client.MasterDataClient;
+import com.educ_nc_spring_19.mailing_service.pattern_engine.controller.request.LetterRequest;
 import com.educ_nc_spring_19.mailing_service.pattern_engine.model.entity.Letter;
 import com.educ_nc_spring_19.mailing_service.pattern_engine.model.entity.Template;
 import com.educ_nc_spring_19.mailing_service.pattern_engine.service.RenderingService;
+import com.educ_nc_spring_19.mailing_service.pattern_engine.service.extractors.registry.ExtractorService;
 import com.educ_nc_spring_19.mailing_service.pattern_engine.service.repo.LetterRepository;
 import com.educ_nc_spring_19.mailing_service.pattern_engine.service.repo.TemplateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -29,6 +30,8 @@ public class LetterController {
     private LetterSender letterSender;
     @Autowired
     private MasterDataClient masterDataClient;
+    @Autowired
+    private ExtractorService extractorService;
 
     @RequestMapping(value = "/letter/findById", method = RequestMethod.GET, produces = "application/json")
     public Letter getLetterById(@RequestParam("id") UUID id) {
@@ -70,22 +73,23 @@ public class LetterController {
     }
 
 
+    //TODO: couldn't add @BodyParam, but I tried
+    //TODO: not header just args
     //receiver_type - это student или mentor
-    @RequestMapping(value = "/sendMail", method = RequestMethod.POST, produces = "application/json")
-    public String sendMail(@RequestParam("receiver_id") UUID rid, @RequestParam("receiver_type") String rtype,
-                           @RequestParam("type") String type, @RequestParam("header_args") Map<String, Object> Args) {
+    @RequestMapping(value = "/sendMail", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+    public String sendMail(@RequestBody LetterRequest letterRequest) {
         String result = "success";
-        if (templateRepository.existsByType(type)) {
+        if (templateRepository.existsByType(letterRequest.type)) {
             try {
-                Template template = templateRepository.findByType(type).get(0);
-                String header = renderingService.render(template.getHeader(), Args);
-                String text = renderingService.render(template.getText(), Args);
-                Letter letter = new Letter(rid, header, text, type);
+                Template template = templateRepository.findByType(letterRequest.type).get(0);
+                String header = renderingService.render(template.getHeader(), letterRequest.Args);
+                String text = renderingService.render(template.getText(), letterRequest.Args);
+                Letter letter = new Letter(letterRequest.rid, header, text, letterRequest.type);
                 String mail;
-                if (rtype.equals("student")) {
-                    mail = masterDataClient.getStudentById(rid).getEmailAddress();
+                if (letterRequest.rtype.equals("student")) {
+                    mail = masterDataClient.getStudentById(letterRequest.rid).getEmailAddress();
                 } else {
-                    mail = masterDataClient.getMentorById(rid).getEmailAddress();
+                    mail = masterDataClient.getMentorByUserId(letterRequest.rid).getEmailAddress();
                 }
                 letterSender.SendLetter(letter, mail);
                 letterRepository.save(letter);
@@ -108,6 +112,21 @@ public class LetterController {
             result = "Exception: " + e.getMessage();
         }
         return result;
+    }
+
+    @RequestMapping(value = "/mdStudent/test", method = RequestMethod.GET, produces = "application/json")
+    public StudentDTO TestStudent() {
+        return masterDataClient.getStudentById(UUID.fromString("97ee68a6-2993-49cd-926b-887911876457"));
+    }
+
+    @RequestMapping(value = "/mdMentor/test", method = RequestMethod.GET, produces = "application/json")
+    public MentorDTO TestMentor(@RequestParam("id") UUID id) {
+        return masterDataClient.getMentorByUserId(id);
+    }
+
+    @RequestMapping(value = "/extractors/test", method = RequestMethod.GET, produces = "application/json")
+    public String TestExtractors() {
+        return extractorService.getExtractor("Mentor name").getKey();
     }
 
 }
