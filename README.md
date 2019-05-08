@@ -20,7 +20,7 @@ Make these requests with Postman (all of Post type)
             {
                 "creator_id":"be8ddc66-58b6-409e-ae35-fc1d80a456b4",
             
-                "type":"congradulations",
+                "type":"congratulations",
             
                 "header":"Поздравляем!",
             
@@ -35,7 +35,7 @@ Make these requests with Postman (all of Post type)
                 
                 "receiver_type":"student",
                
-                "type":"congradulations",
+                "type":"congratulations",
                
                 "Args":{
                     
