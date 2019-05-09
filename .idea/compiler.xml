@@ -23,16 +23,13 @@
           <entry name="$MAVEN_REPOSITORY$/org/springframework/spring-context/4.0.3.RELEASE/spring-context-4.0.3.RELEASE.jar" />
           <entry name="$MAVEN_REPOSITORY$/joda-time/joda-time/2.9/joda-time-2.9.jar" />
         </processorPath>
-        <module name="mailing-service" />
+        <module name="mailing_service" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="mailing-service" target="1.8" />
-    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="mailing-service" options="-parameters -Amapstruct.defaultComponentModel=spring" />
+      <module name="mailing_service" options="-parameters -Amapstruct.defaultComponentModel=spring" />
     </option>
   </component>
 </project>

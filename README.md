@@ -1,20 +1,15 @@
 # mailing-service
 Implementation of Mailing microservice
 
+### Init and fill Database
+1. Create database `educ_nc_spring_19`
+2. Connect to database `educ_nc_spring_19`
+3. Run `INIT_USER-SCHEMA-TABLES.sql` to create user and schema `mentoring_engine` with tables
+4. Run `FILL_TABLES.sql` to fill tables with some values
 
-Init and fill Database
+### Request examples
 
-1. Create database mailing_service
-2. Connect to database mailing_service
-3. Create User mailing_service with password mailing_service
-4. Create schema mailing_service
-5. Add user as owner of this database
-6. Start this microservice
-7. Change create on validate in application.properties
-
-Make these requests with Postman (all of Post type)
-
-1. 1. URL - localhost:55060/template/create
+1. 1. **POST** - localhost:55060/mailing-service/rest/api/v1/template/create
    2. body (json):
      
             {
@@ -22,22 +17,24 @@ Make these requests with Postman (all of Post type)
             
                 "type":"congratulations",
             
-                "header":"Поздравляем!",
+                "header":"Поздравляем, %Student name%!",
             
                 "text":"Вы прошли собеседование на участие в Учебном Центре. Вашим куратором будет %Mentor name%, ваш бэкап - %Backup name%"
             }
     
-2. 1. URL - localhost:55060/sendMail
+2. 1. **POST** - localhost:55060/mailing-service/rest/api/v1/letter/send
    2. body (json):
    
            {
-                "receiver_id":"97ee68a6-2993-49cd-926b-887911876422",
+                "receiver_id":"8b7bce93-3d3b-45fe-b699-ea04d5c3afb3",
                 
                 "receiver_type":"student",
                
                 "type":"congratulations",
                
                 "Args":{
+                
+                    "Student name":"8b7bce93-3d3b-45fe-b699-ea04d5c3afb3",
                     
                     "Mentor name":"d8950a90-7541-4636-af69-3b77954bff8c",
                     
@@ -45,7 +42,7 @@ Make these requests with Postman (all of Post type)
                 }
            }
    
-3. 1. URL - localhost:55060/template/create
+3. 1. **POST** - localhost:55060/mailing-service/rest/api/v1/template/create
    2. body (json):
    
             {
@@ -58,7 +55,7 @@ Make these requests with Postman (all of Post type)
                 "text":"Mentor name from Master Data - %Mentor name%\nBackup name from Master Data -  %Backup name%\nStudent name from Master Data -  %Student name%\nAddress -  %Address%\nDate -  %Date%\nTime -  %Time%\nSome for default -  %random arg type%\nAccept link -  %Accept link%\nReject link -  %Reject link%\nDefault -  %Default%\nSome random again -  %random arg%"
            }
    
-4. 1. URL - localhost:55060/sendMail
+4. 1. **POST** - localhost:55060/mailing-service/rest/api/v1/letter/send
    2. body (json):
    
            {
