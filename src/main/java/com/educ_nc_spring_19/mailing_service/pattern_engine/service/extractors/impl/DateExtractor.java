@@ -1,11 +1,14 @@
 package com.educ_nc_spring_19.mailing_service.pattern_engine.service.extractors.impl;
 
 import com.educ_nc_spring_19.mailing_service.pattern_engine.service.extractors.Extractor;
+import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.Level;
 import org.springframework.stereotype.Component;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 
+@Log4j2
 @Component
 public class DateExtractor  implements Extractor {
 
@@ -13,11 +16,11 @@ public class DateExtractor  implements Extractor {
     public String extract(Object value) {
         if (value != null) {
             try {
-                SimpleDateFormat outputFormat = new SimpleDateFormat("dd.MM.yyyy");
-                SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX");
-                Date date = inputFormat.parse(String.valueOf(value));
-                return outputFormat.format(date);
+                DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+                OffsetDateTime inputOffsetDateTime = OffsetDateTime.parse(String.valueOf(value));
+                return inputOffsetDateTime.toLocalDate().format(outputFormatter);
             } catch (Exception e) {
+                log.log(Level.WARN, e);
                 return "(дата не распознана)";
             }
         } else {

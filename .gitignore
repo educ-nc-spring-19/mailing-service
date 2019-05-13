@@ -27,10 +27,3 @@ HELP.md
 
 ### VS Code ###
 .vscode/
-.idea/compiler.xml
-.idea/encodings.xml
-.idea/libraries/
-.idea/mailing-service.iml
-.idea/misc.xml
-.idea/modules.xml
-.idea/workspace.xml

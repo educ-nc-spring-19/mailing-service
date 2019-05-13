@@ -3,18 +3,21 @@ package com.educ_nc_spring_19.mailing_service.pattern_engine.controller;
 import com.educ_nc_spring_19.mailing_service.pattern_engine.controller.request.TemplateRequest;
 import com.educ_nc_spring_19.mailing_service.pattern_engine.model.entity.Template;
 import com.educ_nc_spring_19.mailing_service.pattern_engine.service.repo.TemplateRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.UUID;
 
+@RequiredArgsConstructor
 @RestController
+@RequestMapping("/mailing-service/rest/api/v1/template")
 public class TemplateController {
-    @Autowired
-    private TemplateRepository templateRepository;
 
-    @RequestMapping(value = "/template/findById", method = RequestMethod.GET, produces = "application/json")
+    private final TemplateRepository templateRepository;
+
+    @GetMapping(path = "/findById", produces = MediaType.APPLICATION_JSON_VALUE)
     public Template getTemplateById(@RequestParam("id") UUID id) {
         if (templateRepository.existsById(id)) {
             return templateRepository.findById(id).get(0);
@@ -23,7 +26,7 @@ public class TemplateController {
         }
     }
 
-    @RequestMapping(value = "/template/getAll", method = RequestMethod.GET, produces = "application/json")
+    @GetMapping(path = "/getAll", produces = MediaType.APPLICATION_JSON_VALUE)
     public ArrayList<Template> getAllTemplates() {
         ArrayList<Template> result = new ArrayList<>();
         Iterable<Template> allTemplates = templateRepository.findAll();
@@ -33,7 +36,7 @@ public class TemplateController {
         return result;
     }
 
-    @RequestMapping(value = "/template/findByCreatorId", method = RequestMethod.GET, produces = "application/json")
+    @GetMapping(path = "/findByCreatorId", produces = MediaType.APPLICATION_JSON_VALUE)
     public ArrayList<Template> getTemplateByCreatorId(@RequestParam("creator_id") UUID cid) {
         if (templateRepository.existsByCreatorId(cid)) {
             return templateRepository.findByCreatorId(cid);
@@ -42,7 +45,7 @@ public class TemplateController {
         }
     }
 
-    @RequestMapping(value = "/template/findByType", method = RequestMethod.GET, produces = "application/json")
+    @GetMapping(path = "/findByType", produces = MediaType.APPLICATION_JSON_VALUE)
     public ArrayList<Template> getTemplateByType(@RequestParam("type") String type) {
         if (templateRepository.existsByType(type)) {
             return templateRepository.findByType(type);
@@ -51,7 +54,9 @@ public class TemplateController {
         }
     }
 
-    @RequestMapping(value = "/template/create", method = RequestMethod.POST, produces = "application/json")
+    @PostMapping(path = "/create",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     public String createTemplate(@RequestBody TemplateRequest templateRequest) {
         String result = "success";
         try {

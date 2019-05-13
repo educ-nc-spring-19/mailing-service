@@ -73,4 +73,20 @@ public class MasterDataClient {
         return null;
     }
 
+    public MentorDTO getMentorById(UUID mentorId) {
+        ResponseEntity<MentorDTO> response = restTemplate.getForEntity(
+                UriComponentsBuilder.newInstance().scheme("http").host(MASTER_DATA_URL).port(MASTER_DATA_PORT)
+                        .path("/master-data/rest/api/v1/mentor/{id}")
+                        .buildAndExpand(mentorId.toString()).toUri(),
+                MentorDTO.class
+        );
+
+        if (response.getStatusCode().equals(HttpStatus.OK)) {
+            return response.getBody();
+        }
+        log.log(Level.WARN, "mentorId: \'" + mentorId.toString()
+                + "\', statusCode: \'" + response.getStatusCode().toString() + "\'");
+        return null;
+    }
+
 }

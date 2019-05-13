@@ -17,7 +17,7 @@ public class MentorNameByMDIdExtractor implements Extractor {
     @Override
     public String extract(Object value) {
         if (value != null) {
-            MentorDTO mentorDTO = masterDataClient.getMentorByUserId(UUID.fromString(String.valueOf(value)));
+            MentorDTO mentorDTO = masterDataClient.getMentorById(UUID.fromString(String.valueOf(value)));
             return mentorDTO.getFirstName() + " " + mentorDTO.getLastName();
         } else {
             return "(не указан)";
